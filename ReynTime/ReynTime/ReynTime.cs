@@ -20,11 +20,15 @@ namespace ReynTime
 {
     public partial class ReynTime : UserControl, IActPluginV1
     {
-        #region Members
+        #region Constants
 
-        const string DEFAULT_SOUND_DIR = @"ReynTime\Sound";
-        const string DEFAULT_MUSIC_DIR = @"ReynTime\Music";
-        const string SETTINGS_FILE = @"Config\ReynTime.config.xml";
+        const string DefaultSoundDir = @"ReynTime\Sound";
+        const string DefaultMusicDir = @"ReynTime\Music";
+        const string SettingsFile = @"Config\ReynTime.config.xml";
+
+        #endregion
+
+        #region Members
 
         string settingsFile;
         SettingsSerializer xmlSettings;
@@ -45,7 +49,7 @@ namespace ReynTime
 
         public ReynTime()
         {
-            settingsFile = Path.Combine(ActGlobals.oFormActMain.AppDataFolder.FullName, SETTINGS_FILE);
+            settingsFile = Path.Combine(ActGlobals.oFormActMain.AppDataFolder.FullName, SettingsFile);
 
             InitializeComponent();
         }
@@ -58,10 +62,11 @@ namespace ReynTime
         {
             ActGlobals.oFormActMain.AfterCombatAction += oFormActMain_AfterCombatAction;
 
+            Manager = new ReynTimeManager();
+
             xmlSettings = new SettingsSerializer(this);
             LoadSettings();
 
-            Manager = new ReynTimeManager();
             Manager.LoadSoundLibrary(soundDirectory.Text, soundVolumeSlider.Value);
             Manager.LoadMusicLibrary(musicDirectory.Text, musicVolumeSlider.Value);
 
@@ -185,10 +190,10 @@ namespace ReynTime
             musicVolumeLevelLabel.Text = musicVolumeSlider.Value.ToString();
 
             if (String.IsNullOrWhiteSpace(soundDirectory.Text))
-                soundDirectory.Text = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), DEFAULT_SOUND_DIR);
+                soundDirectory.Text = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), DefaultSoundDir);
 
             if (String.IsNullOrWhiteSpace(musicDirectory.Text))
-                musicDirectory.Text = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), DEFAULT_MUSIC_DIR);
+                musicDirectory.Text = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), DefaultMusicDir);
         }
 
         void SaveSettings()

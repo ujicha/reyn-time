@@ -71,8 +71,8 @@ namespace ReynTime
 
         public void PlayRandom()
         {
-            string sound = getRandomSound();
-            playMp3(sound);
+            string sound = GetRandomSound();
+            PlayMp3(sound);
         }
 
         public void AddAllInDirectory()
@@ -86,38 +86,11 @@ namespace ReynTime
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
-        int GetAdjustedVolume(int volume)
-        {
-            return Math.Min(Math.Max(volume, 0), 100);
-        }
-
-        string getRandomSound()
-        {
-            if (Library == null | Library.Count == 0)
-                return string.Empty;
-
-            int index = Randomizer.Next(Library.Count);
-            return Path.Combine(SoundDir, Library[index]);
-        }
-
-        /// <summary>
-        /// Play sound using WMP API within ACT. Supports WAV only.
-        /// </summary>
-        /// <param name="path"></param>
-        void playSound(string path)
-        {
-            ActGlobals.oFormActMain.PlaySoundWmpApi(path, 50);
-        }
-
         /// <summary>
         /// Play sound using WMP directly. Supports MP3 and possibly other formats.
         /// </summary>
         /// <param name="path"></param>
-        void playMp3(string path)
+        public void PlayMp3(string path)
         {
             ThreadStart playback = new ThreadStart(delegate
             {
@@ -137,9 +110,36 @@ namespace ReynTime
                     // Ignore playback errors
                 }
             });
-            
+
             Thread soundThread = new Thread(playback);
             soundThread.Start();
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        int GetAdjustedVolume(int volume)
+        {
+            return Math.Min(Math.Max(volume, 0), 100);
+        }
+
+        string GetRandomSound()
+        {
+            if (Library == null | Library.Count == 0)
+                return string.Empty;
+
+            int index = Randomizer.Next(Library.Count);
+            return Path.Combine(SoundDir, Library[index]);
+        }
+
+        /// <summary>
+        /// Play sound using WMP API within ACT. Supports WAV only.
+        /// </summary>
+        /// <param name="path"></param>
+        void PlaySound(string path)
+        {
+            ActGlobals.oFormActMain.PlaySoundWmpApi(path, 50);
         }
 
         #endregion
